@@ -9,7 +9,7 @@ services:
         fromDatabase:
           name: opspilot-db
           property: connectionString
-      - key: JWT_SECRET
+      - key: JWT_SECRET_KEY
         generateValue: true
       - key: APP_ENV
         value: production
