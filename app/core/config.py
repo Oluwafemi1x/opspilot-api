@@ -1,4 +1,6 @@
 from functools import lru_cache
+
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -17,6 +19,14 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @model_validator(mode="after")
+    def validate_production_database(self):
+        if self.app_env.lower() == "production" and not self.database_url.startswith(
+            ("postgresql://", "postgresql+psycopg://")
+        ):
+            raise ValueError("Production requires a PostgreSQL DATABASE_URL")
+        return self
 
     @property
     def cors_origin_list(self) -> list[str]:
