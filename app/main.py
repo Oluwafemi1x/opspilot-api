@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, JSONResponse
+from fastapi.responses import FileResponse, JSONResponse, PlainTextResponse
 from fastapi.staticfiles import StaticFiles
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -37,9 +37,14 @@ STATIC_DIR = Path(__file__).parent / "static"
 app.mount("/app", StaticFiles(directory=STATIC_DIR), name="app")
 
 
-@app.get("/", include_in_schema=False)
+@app.api_route("/", methods=["GET", "HEAD"], include_in_schema=False)
 def dashboard():
     return FileResponse(STATIC_DIR / "index.html")
+
+
+@app.get("/robots.txt", include_in_schema=False)
+def robots():
+    return PlainTextResponse("User-agent: *\nAllow: /\n")
 
 
 @app.get("/health", tags=["Health"])
