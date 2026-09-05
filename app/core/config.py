@@ -1,6 +1,6 @@
 from functools import lru_cache
 
-from pydantic import model_validator
+from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -20,10 +20,21 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
+    @field_validator("database_url", mode="before")
+    @classmethod
+    def normalize_database_url(cls, value):
+        if not isinstance(value, str):
+            return value
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+psycopg://", 1)
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
+
     @model_validator(mode="after")
     def validate_production_database(self):
         if self.app_env.lower() == "production" and not self.database_url.startswith(
-            ("postgresql://", "postgresql+psycopg://")
+            "postgresql+psycopg://"
         ):
             raise ValueError("Production requires a PostgreSQL DATABASE_URL")
         return self
