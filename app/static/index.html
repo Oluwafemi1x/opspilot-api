@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="OpsPilot — modern operations workspace powered by FastAPI." />
+  <title>OpsPilot — Operations Workspace</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/app/styles.css" />
+</head>
+<body>
+  <div id="toast" class="toast" aria-live="polite"></div>
+
+  <section id="authView" class="auth-shell">
+    <div class="auth-brand-panel">
+      <div class="brand brand-light"><span class="brand-mark">O</span><span>OpsPilot</span></div>
+      <div class="auth-copy">
+        <span class="eyebrow light">Operational clarity, built in</span>
+        <h1>Run client work without losing the details.</h1>
+        <p>A secure workspace for teams managing customers, priorities and delivery from one calm dashboard.</p>
+      </div>
+      <div class="auth-proof">
+        <div><strong>JWT</strong><span>Secure sessions</span></div>
+        <div><strong>RBAC</strong><span>Role permissions</span></div>
+        <div><strong>Multi-tenant</strong><span>Isolated workspaces</span></div>
+      </div>
+      <div class="orb orb-a"></div><div class="orb orb-b"></div>
+    </div>
+
+    <div class="auth-form-panel">
+      <div class="auth-card">
+        <div class="mobile-brand brand"><span class="brand-mark">O</span><span>OpsPilot</span></div>
+        <div class="auth-switch" role="tablist">
+          <button id="loginTab" class="active" type="button">Sign in</button>
+          <button id="registerTab" type="button">Create workspace</button>
+        </div>
+
+        <form id="loginForm" class="auth-form">
+          <div><span class="eyebrow">Welcome back</span><h2>Sign in to OpsPilot</h2><p>Continue to your operations workspace.</p></div>
+          <label>Email<input id="loginEmail" type="email" autocomplete="email" placeholder="you@company.com" required /></label>
+          <label>Password<div class="password-wrap"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Your password" required /><button class="ghost-icon password-toggle" type="button" aria-label="Show password">Show</button></div></label>
+          <button class="primary wide" type="submit"><span>Sign in</span><span>→</span></button>
+        </form>
+
+        <form id="registerForm" class="auth-form hidden">
+          <div><span class="eyebrow">Start organized</span><h2>Create your workspace</h2><p>Your account starts as the workspace owner.</p></div>
+          <label>Full name<input id="registerName" autocomplete="name" placeholder="Olawumi Oluwafemi" minlength="2" required /></label>
+          <label>Work email<input id="registerEmail" type="email" autocomplete="email" placeholder="you@company.com" required /></label>
+          <label>Company / workspace<input id="registerOrg" placeholder="Pycoder Labs" minlength="2" required /></label>
+          <label>Password<div class="password-wrap"><input id="registerPassword" type="password" autocomplete="new-password" minlength="10" placeholder="At least 10 characters" required /><button class="ghost-icon password-toggle" type="button" aria-label="Show password">Show</button></div></label>
+          <button class="primary wide" type="submit"><span>Create workspace</span><span>→</span></button>
+        </form>
+        <p class="auth-footnote">Built with FastAPI, PostgreSQL, SQLAlchemy and JWT authentication.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="appView" class="app-shell hidden">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand"><span class="brand-mark">O</span><span>OpsPilot</span></div>
+      <div class="workspace-chip"><span class="workspace-avatar" id="workspaceInitial">O</span><div><strong id="workspaceName">Workspace</strong><small id="workspaceRole">owner</small></div><span class="chevron">⌄</span></div>
+      <nav class="nav-list" aria-label="Primary">
+        <button class="nav-item active" data-view="overview"><span class="nav-icon">⌂</span><span>Overview</span></button>
+        <button class="nav-item" data-view="clients"><span class="nav-icon">◎</span><span>Clients</span></button>
+        <button class="nav-item" data-view="workorders"><span class="nav-icon">▤</span><span>Work orders</span></button>
+        <button class="nav-item" data-view="team"><span class="nav-icon">♙</span><span>Team</span></button>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <a class="nav-item" href="/docs" target="_blank"><span class="nav-icon">↗</span><span>API Docs</span></a>
+      <button id="logoutBtn" class="nav-item danger-soft"><span class="nav-icon">⇥</span><span>Sign out</span></button>
+      <div class="user-card"><span class="user-avatar" id="userInitials">OO</span><div><strong id="userName">User</strong><small id="userEmail">email</small></div></div>
+    </aside>
+
+    <main class="main-content">
+      <header class="topbar">
+        <button id="menuBtn" class="menu-button" aria-label="Open menu">☰</button>
+        <div><p class="top-kicker" id="topKicker">Workspace overview</p><h1 id="pageTitle">Good day</h1></div>
+        <div class="top-actions"><button class="icon-button" title="Command search">⌘ K</button><button id="quickAddBtn" class="primary compact">+ New work order</button></div>
+      </header>
+
+      <section id="overviewView" class="view-section">
+        <div class="hero-row">
+          <div><span class="eyebrow">Today at a glance</span><h2>Keep work moving.</h2><p>See what needs attention, what is progressing, and what your team has delivered.</p></div>
+          <button id="heroCreateBtn" class="secondary">Create work order</button>
+        </div>
+        <div class="metrics-grid">
+          <article class="metric-card"><div class="metric-top"><span>Open work</span><span class="metric-icon">↗</span></div><strong id="metricOpen">0</strong><small>Active work orders</small></article>
+          <article class="metric-card"><div class="metric-top"><span>High priority</span><span class="metric-icon">!</span></div><strong id="metricHigh">0</strong><small>Needs attention</small></article>
+          <article class="metric-card"><div class="metric-top"><span>Clients</span><span class="metric-icon">◎</span></div><strong id="metricClients">0</strong><small>In this workspace</small></article>
+          <article class="metric-card accent-card"><div class="metric-top"><span>Completion</span><span class="metric-icon">✓</span></div><strong id="metricCompletion">0%</strong><small>Across tracked work</small></article>
+        </div>
+        <div class="content-grid">
+          <article class="panel span-2"><div class="panel-head"><div><h3>Recent work orders</h3><p>Your latest operational activity.</p></div><button class="text-button" data-view-link="workorders">View all →</button></div><div id="recentWorkOrders" class="table-wrap"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Workload</h3><p>Orders by status</p></div></div><div id="statusBreakdown" class="status-list"></div></article>
+        </div>
+      </section>
+
+      <section id="clientsView" class="view-section hidden">
+        <div class="section-toolbar"><div><span class="eyebrow">Customer records</span><h2>Clients</h2><p>Keep customer contacts and context close to the work.</p></div><button id="newClientBtn" class="primary">+ Add client</button></div>
+        <article class="panel"><div class="filter-row"><div class="search-box">⌕<input id="clientSearch" placeholder="Search clients by name or email" /></div><span class="record-count" id="clientCount">0 clients</span></div><div id="clientsTable" class="table-wrap"></div><div id="clientPagination" class="pagination"></div></article>
+      </section>
+
+      <section id="workordersView" class="view-section hidden">
+        <div class="section-toolbar"><div><span class="eyebrow">Delivery pipeline</span><h2>Work orders</h2><p>Track priority, status, deadlines and client work in one place.</p></div><button id="newWorkOrderBtn" class="primary">+ New work order</button></div>
+        <article class="panel"><div class="filter-row wrap"><div class="search-box">⌕<input id="workSearch" placeholder="Search title or description" /></div><select id="statusFilter"><option value="">All statuses</option><option value="open">Open</option><option value="in_progress">In progress</option><option value="blocked">Blocked</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select><select id="priorityFilter"><option value="">All priorities</option><option value="low">Low</option><option value="medium">Medium</option><option value="high">High</option><option value="urgent">Urgent</option></select><span class="record-count" id="workCount">0 orders</span></div><div id="workOrdersTable" class="table-wrap"></div><div id="workPagination" class="pagination"></div></article>
+      </section>
+
+      <section id="teamView" class="view-section hidden">
+        <div class="section-toolbar"><div><span class="eyebrow">Access & permissions</span><h2>Team</h2><p>See who can access this workspace and the role assigned to them.</p></div><span class="security-pill">● Tenant isolated</span></div>
+        <div id="teamGrid" class="team-grid"></div>
+        <article class="panel info-panel"><div class="info-icon">i</div><div><h3>Role-based access control</h3><p>Owners control client deletion and member roles. Admins can manage clients and work orders. Members can read shared client data and create or update work orders.</p></div></article>
+      </section>
+    </main>
+  </div>
+
+  <div id="modalBackdrop" class="modal-backdrop hidden">
+    <div class="modal" role="dialog" aria-modal="true">
+      <button id="modalClose" class="modal-close" type="button">×</button>
+      <span id="modalEyebrow" class="eyebrow"></span>
+      <h2 id="modalTitle"></h2>
+      <form id="modalForm" class="modal-form"></form>
+    </div>
+  </div>
+
+  <script src="/app/app.js" defer></script>
+</body>
+</html>
