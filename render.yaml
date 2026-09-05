@@ -1,13 +1,16 @@
 services:
   - type: web
     name: opspilot-api
-    runtime: docker
+    runtime: python
+    region: frankfurt
     plan: free
+    buildCommand: pip install -e . && alembic upgrade head
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     envVars:
       - key: DATABASE_URL
         fromDatabase:
-          name: opspilot-db
+          name: opspilot-postgres
           property: connectionString
       - key: JWT_SECRET_KEY
         generateValue: true
@@ -15,7 +18,9 @@ services:
         value: production
 
 databases:
-  - name: opspilot-db
+  - name: opspilot-postgres
     plan: free
-    databaseName: opspilot
-    user: opspilot
+    region: frankfurt
+    databaseName: opspilot_postgres_mnlg
+    user: opspilot_postgres_mnlg_user
+    postgresMajorVersion: 16
